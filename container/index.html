@@ -44,6 +44,8 @@
       .then(() => console.log('Diagramm gerendert'))
       .catch(err => console.error('Fehler beim Rendern', err));
 
+    let currentFileName = null;
+
     const fileInput = document.getElementById('file-input');
 
     document.getElementById('btn-open').addEventListener('click', () => fileInput.click());
@@ -52,7 +54,10 @@
       const file = fileInput.files[0];
       if (!file) return;
       file.text().then(xml => modeler.importXML(xml))
-        .then(() => console.log('Diagramm geladen:', file.name))
+        .then(() => {
+          currentFileName = file.name;
+          console.log('Diagramm geladen:', file.name);
+        })
         .catch(err => console.error('Fehler beim Laden', err));
       fileInput.value = '';
     });
@@ -71,7 +76,7 @@
     }
 
     document.getElementById('btn-save').addEventListener('click', async () => {
-      const fileName = prompt('Dateiname:', nextFileName());
+      const fileName = prompt('Dateiname:', currentFileName || nextFileName());
       if (!fileName) return;
       try {
         const { xml } = await modeler.saveXML({ format: true });
@@ -79,6 +84,7 @@
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
         a.download = fileName.endsWith('.bpmn') ? fileName : fileName + '.bpmn';
+        currentFileName = a.download;
         a.click();
         URL.revokeObjectURL(a.href);
       } catch (err) {
