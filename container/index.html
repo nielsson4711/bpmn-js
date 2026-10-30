@@ -46,6 +46,20 @@
     header button:hover { filter: brightness(1.1); }
     #canvas { flex: 1; min-height: 0; color: var(--bio-text); }
     @media print {
+      html[data-theme="dark"] {
+        --bg: #fafafa; --panel: #fff; --border: #ddd; --text: #333;
+        --bio-surface: hsl(0, 0%, 100%);
+        --bio-surface-medium: hsl(225, 10%, 95%);
+        --bio-surface-subtle: hsl(225, 10%, 97%);
+        --bio-surface-overlay: hsl(0, 0%, 100%);
+        --bio-border: hsl(225, 10%, 75%);
+        --bio-text: hsl(225, 10%, 15%);
+        --bio-text-subtle: hsl(225, 10%, 35%);
+        --bio-text-subtlest: hsl(225, 10%, 55%);
+        --bio-primary: hsl(205, 100%, 40%);
+        --bio-canvas-accent: hsl(205, 100%, 40%);
+        --bio-canvas-accent-subtle: hsl(205, 100%, 75%);
+      }
       header, .djs-palette, .djs-popup, .bjs-powered-by, .io-import-arrow, .io-import-status { display: none !important; }
       html, body, #app, #canvas { height: auto !important; overflow: visible !important; }
       #canvas { position: static !important; }
