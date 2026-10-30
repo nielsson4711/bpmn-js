@@ -51,6 +51,9 @@
   <div id="app">
     <header>
       <strong>bpmn-js Modeler</strong>
+      <button type="button" id="btn-zoom-out" title="Verkleinern">−</button>
+      <button type="button" id="btn-zoom-fit" title="Einpassen">⤢</button>
+      <button type="button" id="btn-zoom-in" title="Vergrößern">+</button>
       <button type="button" id="btn-theme" title="Design wechseln">🌓</button>
       <button type="button" id="btn-open">Öffnen</button>
       <button type="button" id="btn-save">Speichern</button>
@@ -102,8 +105,42 @@
     fetch('initial.bpmn')
       .then(r => r.ok ? r.text() : modeler.createDiagram())
       .then(xml => modeler.importXML(xml))
-      .then(() => console.log('Diagramm gerendert'))
+      .then(() => {
+        console.log('Diagramm gerendert');
+        modeler.get('canvas').zoom('fit-viewport');
+      })
       .catch(err => console.error('Fehler beim Rendern', err));
+
+    const canvas = modeler.get('canvas');
+
+    function fitViewport() {
+      canvas.zoom('fit-viewport', 'auto');
+    }
+
+    document.getElementById('btn-zoom-in').addEventListener('click', () => canvas.zoom(0.2));
+    document.getElementById('btn-zoom-out').addEventListener('click', () => canvas.zoom(-0.2));
+    document.getElementById('btn-zoom-fit').addEventListener('click', fitViewport);
+
+    document.addEventListener('keydown', (event) => {
+      if (event.ctrlKey || event.metaKey) {
+        if (event.key === '+' || event.key === '=') {
+          event.preventDefault();
+          canvas.zoom(0.2);
+        } else if (event.key === '-') {
+          event.preventDefault();
+          canvas.zoom(-0.2);
+        } else if (event.key === '0') {
+          event.preventDefault();
+          fitViewport();
+        }
+      }
+    });
+
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(fitViewport, 150);
+    });
 
     let currentFileName = null;
 
@@ -117,6 +154,7 @@
       file.text().then(xml => modeler.importXML(xml))
         .then(() => {
           currentFileName = file.name;
+          fitViewport();
           console.log('Diagramm geladen:', file.name);
         })
         .catch(err => console.error('Fehler beim Laden', err));
