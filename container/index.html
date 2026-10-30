@@ -8,32 +8,80 @@
   <link rel="stylesheet" href="assets/bpmn-js.css">
   <link rel="stylesheet" href="assets/bpmn-font/css/bpmn.css">
   <style>
-    html, body { height: 100%; margin: 0; padding: 0; }
+    :root {
+      --bg: #fafafa; --panel: #fff; --border: #ddd; --text: #333;
+    }
+    html[data-theme="dark"] {
+      --bg: #1e1e1e; --panel: #2b2b2b; --border: #444; --text: #ddd;
+    }
+    html, body { height: 100%; margin: 0; padding: 0; background: var(--bg); }
     #app { display: flex; flex-direction: column; height: 100%; }
     header {
       display: flex; align-items: center; justify-content: flex-end;
       gap: 8px; padding: 6px 10px; flex: none;
-      border-bottom: 1px solid #ddd; background: #fafafa;
+      border-bottom: 1px solid var(--border); background: var(--bg);
+      color: var(--text);
     }
-    header strong { margin-right: auto; font: 600 14px sans-serif; color: #333; }
+    header strong { margin-right: auto; font: 600 14px sans-serif; color: var(--text); }
     header button {
-      padding: 5px 14px; border: 1px solid #ccc; border-radius: 4px;
-      background: #fff; cursor: pointer; font: 13px sans-serif;
+      padding: 5px 14px; border: 1px solid var(--border); border-radius: 4px;
+      background: var(--panel); color: var(--text); cursor: pointer; font: 13px sans-serif;
     }
-    header button:hover { background: #f0f0f0; }
+    header button:hover { filter: brightness(1.1); }
     #canvas { flex: 1; min-height: 0; }
+    html[data-theme="dark"] .djs-palette,
+    html[data-theme="dark"] .djs-popup {
+      background: var(--panel) !important;
+      border-color: var(--border) !important;
+      color: var(--text);
+    }
+    html[data-theme="dark"] .djs-palette .entry:hover {
+      background: #3a3a3a !important;
+    }
   </style>
 </head>
 <body>
   <div id="app">
     <header>
       <strong>bpmn-js Modeler</strong>
+      <button type="button" id="btn-theme" title="Design wechseln">🌓</button>
       <button type="button" id="btn-open">Öffnen</button>
       <button type="button" id="btn-save">Speichern</button>
       <input type="file" id="file-input" accept=".bpmn,.xml" hidden>
     </header>
     <div id="canvas"></div>
   </div>
+  <script>
+    (function() {
+      const modes = ['auto', 'light', 'dark'];
+      let mode = localStorage.getItem('bpmnjs-theme') || 'auto';
+
+      function applyTheme() {
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const dark = mode === 'dark' || (mode === 'auto' && systemDark);
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      }
+
+      function themeLabel() {
+        return { auto: '🌓', light: '☀️', dark: '🌙' }[mode];
+      }
+
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const btn = document.getElementById('btn-theme');
+        btn.addEventListener('click', () => {
+          mode = modes[(modes.indexOf(mode) + 1) % modes.length];
+          localStorage.setItem('bpmnjs-theme', mode);
+          applyTheme();
+          btn.textContent = themeLabel();
+        });
+        btn.textContent = themeLabel();
+      });
+
+      applyTheme();
+    })();
+  </script>
   <script src="bpmn-modeler.production.min.js"></script>
   <script>
     const modeler = new BpmnJS({ container: '#canvas' });
