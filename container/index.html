@@ -9,9 +9,23 @@
   <link rel="stylesheet" href="assets/bpmn-font/css/bpmn.css">
   <style>
     html, body, #canvas { height: 100%; margin: 0; padding: 0; }
+    #toolbar {
+      position: fixed; top: 10px; left: 10px; z-index: 100;
+      display: flex; gap: 8px;
+    }
+    #toolbar button {
+      padding: 6px 14px; border: 1px solid #ccc; border-radius: 4px;
+      background: #fff; cursor: pointer; font: 14px sans-serif;
+    }
+    #toolbar button:hover { background: #f0f0f0; }
   </style>
 </head>
 <body>
+  <div id="toolbar">
+    <button type="button" id="btn-open">Öffnen</button>
+    <button type="button" id="btn-save">Speichern</button>
+    <input type="file" id="file-input" accept=".bpmn,.xml" hidden>
+  </div>
   <div id="canvas"></div>
   <script src="bpmn-modeler.production.min.js"></script>
   <script>
@@ -22,6 +36,33 @@
       .then(xml => modeler.importXML(xml))
       .then(() => console.log('Diagramm gerendert'))
       .catch(err => console.error('Fehler beim Rendern', err));
+
+    const fileInput = document.getElementById('file-input');
+
+    document.getElementById('btn-open').addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files[0];
+      if (!file) return;
+      file.text().then(xml => modeler.importXML(xml))
+        .then(() => console.log('Diagramm geladen:', file.name))
+        .catch(err => console.error('Fehler beim Laden', err));
+      fileInput.value = '';
+    });
+
+    document.getElementById('btn-save').addEventListener('click', async () => {
+      try {
+        const { xml } = await modeler.saveXML({ format: true });
+        const blob = new Blob([xml], { type: 'application/xml' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'diagram.bpmn';
+        a.click();
+        URL.revokeObjectURL(a.href);
+      } catch (err) {
+        console.error('Fehler beim Speichern', err);
+      }
+    });
   </script>
 </body>
 </html>
