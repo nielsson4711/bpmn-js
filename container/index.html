@@ -13,6 +13,22 @@
     }
     html[data-theme="dark"] {
       --bg: #1e1e1e; --panel: #2b2b2b; --border: #444; --text: #ddd;
+      --bio-surface: hsl(225, 10%, 18%);
+      --bio-surface-medium: hsl(225, 10%, 24%);
+      --bio-surface-subtle: hsl(225, 10%, 22%);
+      --bio-surface-overlay: hsl(225, 10%, 20%);
+      --bio-surface-inverted: hsl(0, 0%, 92%);
+      --bio-surface-inverted-subtle: hsl(225, 10%, 75%);
+      --bio-border: hsl(225, 10%, 35%);
+      --bio-border-disabled: hsl(225, 10%, 30%);
+      --bio-text: hsl(225, 10%, 88%);
+      --bio-text-subtle: hsl(225, 10%, 72%);
+      --bio-text-subtlest: hsl(225, 10%, 55%);
+      --bio-text-on-inverted: hsl(225, 10%, 15%);
+      --bio-primary: hsl(205, 100%, 65%);
+      --bio-primary-surface: hsl(205, 40%, 25%);
+      --bio-canvas-accent: hsl(205, 100%, 65%);
+      --bio-canvas-accent-subtle: hsl(205, 100%, 45%);
     }
     html, body { height: 100%; margin: 0; padding: 0; background: var(--bg); }
     #app { display: flex; flex-direction: column; height: 100%; }
@@ -29,15 +45,6 @@
     }
     header button:hover { filter: brightness(1.1); }
     #canvas { flex: 1; min-height: 0; }
-    html[data-theme="dark"] .djs-palette,
-    html[data-theme="dark"] .djs-popup {
-      background: var(--panel) !important;
-      border-color: var(--border) !important;
-      color: var(--text);
-    }
-    html[data-theme="dark"] .djs-palette .entry:hover {
-      background: #3a3a3a !important;
-    }
   </style>
 </head>
 <body>
