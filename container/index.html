@@ -45,6 +45,13 @@
     }
     header button:hover { filter: brightness(1.1); }
     #canvas { flex: 1; min-height: 0; color: var(--bio-text); }
+    @media print {
+      header, .djs-palette, .djs-popup, .bjs-powered-by, .io-import-arrow, .io-import-status { display: none !important; }
+      html, body, #app, #canvas { height: auto !important; overflow: visible !important; }
+      #canvas { position: static !important; }
+      #canvas > div { width: auto !important; height: auto !important; overflow: visible !important; position: static !important; }
+      #canvas svg { max-width: 100% !important; height: auto !important; }
+    }
   </style>
 </head>
 <body>
@@ -54,6 +61,7 @@
       <button type="button" id="btn-zoom-out" title="Verkleinern">−</button>
       <button type="button" id="btn-zoom-fit" title="Einpassen">⤢</button>
       <button type="button" id="btn-zoom-in" title="Vergrößern">+</button>
+      <button type="button" id="btn-print" title="Drucken / PDF exportieren">🖨</button>
       <button type="button" id="btn-theme" title="Design wechseln">🌓</button>
       <button type="button" id="btn-open">Öffnen</button>
       <button type="button" id="btn-save">Speichern</button>
@@ -136,6 +144,12 @@
       }
     });
 
+    document.getElementById('btn-print').addEventListener('click', () => {
+      const oldZoom = canvas.zoom();
+      fitViewport();
+      window.print();
+      canvas.zoom(oldZoom);
+    });
     let resizeTimer;
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimer);
