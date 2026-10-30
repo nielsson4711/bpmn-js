@@ -1,0 +1,9 @@
+services:
+  bpmnjs:
+    build: .
+    image: bpmn-js-app:latest
+    container_name: bpmnjs
+    ports:
+      # Nur lokal erreichbar; Caddy reverse_proxy localhost:8084
+      - "127.0.0.1:8084:80"
+    restart: unless-stopped
