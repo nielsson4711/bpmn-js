@@ -44,7 +44,7 @@
       background: var(--panel); color: var(--text); cursor: pointer; font: 13px sans-serif;
     }
     header button:hover { filter: brightness(1.1); }
-    #canvas { flex: 1; min-height: 0; }
+    #canvas { flex: 1; min-height: 0; color: var(--bio-text); }
   </style>
 </head>
 <body>
@@ -91,7 +91,13 @@
   </script>
   <script src="bpmn-modeler.production.min.js"></script>
   <script>
-    const modeler = new BpmnJS({ container: '#canvas' });
+    const modeler = new BpmnJS({
+      container: '#canvas',
+      bpmnRenderer: {
+        defaultFillColor: 'transparent',
+        defaultStrokeColor: 'currentColor'
+      }
+    });
 
     fetch('initial.bpmn')
       .then(r => r.ok ? r.text() : modeler.createDiagram())
