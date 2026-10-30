@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>bpmn-js Modeler</title>
+  <link rel="stylesheet" href="assets/bpmn-js.css">
+  <link rel="stylesheet" href="assets/bpmn-font/css/bpmn-embedded.css">
+  <style>
+    html, body, #canvas { height: 100%; margin: 0; padding: 0; }
+  </style>
+</head>
+<body>
+  <div id="canvas"></div>
+  <script src="bpmn-modeler.production.min.js"></script>
+  <script>
+    const modeler = new BpmnJS({ container: '#canvas' });
+
+    fetch('initial.bpmn')
+      .then(r => r.ok ? r.text() : modeler.createDiagram())
+      .then(xml => modeler.importXML(xml))
+      .then(() => console.log('Diagramm gerendert'))
+      .catch(err => console.error('Fehler beim Rendern', err));
+  </script>
+</body>
+</html>
