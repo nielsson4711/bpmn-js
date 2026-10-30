@@ -75,18 +75,45 @@
       return yyyymmdd + '-bpmnjs-' + next + '.bpmn';
     }
 
-    document.getElementById('btn-save').addEventListener('click', async () => {
-      const fileName = prompt('Dateiname:', currentFileName || nextFileName());
-      if (!fileName) return;
+    async function saveViaFilePicker(suggestedName) {
+      if (!window.showSaveFilePicker) return null;
+      let handle;
       try {
-        const { xml } = await modeler.saveXML({ format: true });
-        const blob = new Blob([xml], { type: 'application/xml' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = fileName.endsWith('.bpmn') ? fileName : fileName + '.bpmn';
-        currentFileName = a.download;
-        a.click();
-        URL.revokeObjectURL(a.href);
+        handle = await window.showSaveFilePicker({
+          suggestedName,
+          types: [{ description: 'BPMN-Diagramm', accept: { 'application/xml': ['.bpmn'] } }]
+        });
+      } catch (err) {
+        if (err.name === 'AbortError') return false;
+        throw err;
+      }
+      const { xml } = await modeler.saveXML({ format: true });
+      const writable = await handle.createWritable();
+      await writable.write(new Blob([xml], { type: 'application/xml' }));
+      await writable.close();
+      currentFileName = handle.name;
+      return true;
+    }
+
+    async function saveViaDownload(suggestedName) {
+      const fileName = prompt('Dateiname:', suggestedName);
+      if (!fileName) return false;
+      const { xml } = await modeler.saveXML({ format: true });
+      const blob = new Blob([xml], { type: 'application/xml' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = fileName.endsWith('.bpmn') ? fileName : fileName + '.bpmn';
+      currentFileName = a.download;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      return true;
+    }
+
+    document.getElementById('btn-save').addEventListener('click', async () => {
+      const suggested = currentFileName || nextFileName();
+      try {
+        const saved = await saveViaFilePicker(suggested);
+        if (saved !== true) await saveViaDownload(suggested);
       } catch (err) {
         console.error('Fehler beim Speichern', err);
       }
