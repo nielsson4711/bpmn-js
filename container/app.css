@@ -1,0 +1,59 @@
+:root {
+  --bg: #fafafa; --panel: #fff; --border: #ddd; --text: #333;
+}
+html[data-theme="dark"] {
+  --bg: #1e1e1e; --panel: #2b2b2b; --border: #444; --text: #ddd;
+  --bio-surface: hsl(225, 10%, 18%);
+  --bio-surface-medium: hsl(225, 10%, 24%);
+  --bio-surface-subtle: hsl(225, 10%, 22%);
+  --bio-surface-overlay: hsl(225, 10%, 20%);
+  --bio-surface-inverted: hsl(0, 0%, 92%);
+  --bio-surface-inverted-subtle: hsl(225, 10%, 75%);
+  --bio-border: hsl(225, 10%, 35%);
+  --bio-border-disabled: hsl(225, 10%, 30%);
+  --bio-text: hsl(225, 10%, 88%);
+  --bio-text-subtle: hsl(225, 10%, 72%);
+  --bio-text-subtlest: hsl(225, 10%, 55%);
+  --bio-text-on-inverted: hsl(225, 10%, 15%);
+  --bio-primary: hsl(205, 100%, 65%);
+  --bio-primary-surface: hsl(205, 40%, 25%);
+  --bio-canvas-accent: hsl(205, 100%, 65%);
+  --bio-canvas-accent-subtle: hsl(205, 100%, 45%);
+}
+html, body { height: 100%; margin: 0; padding: 0; background: var(--bg); }
+#app { display: flex; flex-direction: column; height: 100%; }
+header {
+  display: flex; align-items: center; justify-content: flex-end;
+  gap: 8px; padding: 6px 10px; flex: none;
+  border-bottom: 1px solid var(--border); background: var(--bg);
+  color: var(--text);
+}
+header strong { margin-right: auto; font: 600 14px sans-serif; color: var(--text); }
+header button {
+  padding: 5px 14px; border: 1px solid var(--border); border-radius: 4px;
+  background: var(--panel); color: var(--text); cursor: pointer; font: 13px sans-serif;
+}
+header button:hover { filter: brightness(1.1); }
+#canvas { flex: 1; min-height: 0; color: var(--bio-text); }
+
+@media print {
+  html[data-theme="dark"] {
+    --bg: #fafafa; --panel: #fff; --border: #ddd; --text: #333;
+    --bio-surface: hsl(0, 0%, 100%);
+    --bio-surface-medium: hsl(225, 10%, 95%);
+    --bio-surface-subtle: hsl(225, 10%, 97%);
+    --bio-surface-overlay: hsl(0, 0%, 100%);
+    --bio-border: hsl(225, 10%, 75%);
+    --bio-text: hsl(225, 10%, 15%);
+    --bio-text-subtle: hsl(225, 10%, 35%);
+    --bio-text-subtlest: hsl(225, 10%, 55%);
+    --bio-primary: hsl(205, 100%, 40%);
+    --bio-canvas-accent: hsl(205, 100%, 40%);
+    --bio-canvas-accent-subtle: hsl(205, 100%, 75%);
+  }
+  header, .djs-palette, .djs-popup, .bjs-powered-by, .io-import-arrow, .io-import-status { display: none !important; }
+  html, body, #app, #canvas { height: auto !important; overflow: visible !important; }
+  #canvas { position: static !important; }
+  #canvas > div { width: auto !important; height: auto !important; overflow: visible !important; position: static !important; }
+  #canvas svg { max-width: 100% !important; height: auto !important; }
+}
